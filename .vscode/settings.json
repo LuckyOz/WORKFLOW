@@ -1,0 +1,14 @@
+{
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "WORKFLOW\\obj": true,
+    "WORKFLOW\\bin": true,
+    ".vs": true
+  },
+  "hide-files.files": []
+}
