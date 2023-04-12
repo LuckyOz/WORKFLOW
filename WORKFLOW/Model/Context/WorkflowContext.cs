@@ -13,9 +13,11 @@ namespace WORKFLOW.Model.Context
         public DbSet<ms_rule>? ms_rules { get; set; }
         public DbSet<md_rule_var>? md_rule_vars { get; set; }
         public DbSet<md_rule_exp>? md_rule_exps { get; set; }
-        //public DbSet<md_rule_rsl> md_rule_rsls { get; set; }
+        public DbSet<md_rule_rslt>? md_rule_rslts { get; set; }
         public DbSet<ms_groupworkflow>? ms_groupworkflows { get; set; }
         public DbSet<md_groupworkflow>? md_groupworkflows { get; set; }
+        public DbSet<ms_user>? ms_users { get; set; }
+        public DbSet<tr_workflow>? tr_workflows { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -49,11 +51,23 @@ namespace WORKFLOW.Model.Context
                     .HasName("md_rule_exp_PRIMARY");
             });
 
-            //modelBuilder.Entity<md_rule_rsl>(entity =>
-            //{
-            //    entity.HasKey(e => new { e.workflowcode, e.rulecode, e.groupline, e.linenum, e.item })
-            //        .HasName("md_rule_rsl_PRIMARY");
-            //});
+            modelBuilder.Entity<md_rule_rslt>(entity =>
+            {
+                entity.HasKey(e => new { e.workflowcode, e.rulecode, e.linenum })
+                    .HasName("md_rule_rsl_PRIMARY");
+            });
+
+            modelBuilder.Entity<ms_groupworkflow>(entity =>
+            {
+                entity.HasKey(e => new { e.workflowcode, e.groupworkflowcode })
+                    .HasName("ms_groupworkflow_PRIMARY");
+            });
+
+            modelBuilder.Entity<tr_workflow>(entity =>
+            {
+                entity.HasKey(e => new { e.documentnumber, e.linegroup, e.workflowcode, e.rulecode, e.groupworkflowcode })
+                    .HasName("tr_workflow_PRIMARY");
+            });
 
             OnModelCreatingPartial(modelBuilder);
         }

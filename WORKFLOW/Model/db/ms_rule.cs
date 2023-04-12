@@ -4,7 +4,7 @@ namespace WORKFLOW.Model.db
     [Table("ms_rule")]
     public class ms_rule
     {
-        [ForeignKey("ms_promo_workflow")]
+        [ForeignKey("ms_workflow")]
         [Required]
         [Column("workflowcode")]
         [StringLength(100)]
@@ -45,6 +45,6 @@ namespace WORKFLOW.Model.db
 
         public List<md_rule_exp>? md_rule_exps { get; set; }
 
-        //public List<md_promo_rule_rsl> md_promo_rule_rsls { get; set; }
+        public List<md_rule_rslt>? md_rule_rslts { get; set; }
     }
 }

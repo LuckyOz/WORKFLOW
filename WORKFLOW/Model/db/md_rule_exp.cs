@@ -3,13 +3,13 @@ namespace WORKFLOW.Model.db
 {
     public class md_rule_exp
     {
-        [ForeignKey("ms_promo_workflow")]
+        [ForeignKey("ms_workflow")]
         [Required]
         [Column("workflowcode")]
         [StringLength(100)]
         public string workflowcode { get; set; } = string.Empty;
 
-        [ForeignKey("ms_promo_rule")]
+        [ForeignKey("ms_rule")]
         [Required]
         [Column("rulecode")]
         [StringLength(100)]

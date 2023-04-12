@@ -1,7 +1,7 @@
-﻿
-namespace WORKFLOW.Model.db
+﻿namespace WORKFLOW.Model.db
 {
-    public class md_rule_var
+    [Table("md_rule_rslt")]
+    public class md_rule_rslt
     {
         [ForeignKey("ms_workflow")]
         [Required]
@@ -15,24 +15,27 @@ namespace WORKFLOW.Model.db
         [StringLength(100)]
         public string rulecode { get; set; } = string.Empty;
 
+        [Key]
         [Required]
         [Column("linenum")]
         public int linenum { get; set; }
 
-        [Key]
         [Required]
-        [Column("paramcode")]
-        [StringLength(100)]
-        public string paramcode { get; set; } = string.Empty;
+        [Column("linegroup")]
+        public int linegroup { get; set; }
 
         [Required]
-        [Column("paramname")]
+        [Column("groupworkflowcode")]
         [StringLength(100)]
-        public string paramname { get; set; } = string.Empty;
+        public string groupworkflowcode { get; set; } = string.Empty;
 
         [Required]
-        [Column("paramsexpression")]
-        [StringLength(9999999)]
-        public string paramsexpression { get; set; } = string.Empty;
+        [Column("actworkflow")]
+        [StringLength(200)]
+        public string actworkflow { get; set; } = string.Empty;
+
+        [Column("descworkflow")]
+        [StringLength(200)]
+        public string descworkflow { get; set; } = string.Empty;
     }
 }

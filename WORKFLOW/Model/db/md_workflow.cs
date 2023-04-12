@@ -4,7 +4,7 @@ namespace WORKFLOW.Model.db
     [Table("md_workflow")]
     public class md_workflow
     {
-        [ForeignKey("ms_promo_workflow")]
+        [ForeignKey("ms_workflow")]
         [Required]
         [Column("workflowcode")]
         [StringLength(100)]

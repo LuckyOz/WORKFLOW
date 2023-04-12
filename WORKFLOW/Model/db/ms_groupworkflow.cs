@@ -4,6 +4,11 @@
     public class ms_groupworkflow
     {
         [Key]
+        [Column("workflowcode")]
+        [StringLength(100)]
+        public string workflowcode { get; set; } = string.Empty;
+
+        [Key]
         [Required]
         [Column("groupworkflowcode")]
         [StringLength(100)]

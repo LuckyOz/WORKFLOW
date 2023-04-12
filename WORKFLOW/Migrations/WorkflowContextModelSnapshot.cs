@@ -34,8 +34,18 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("username");
 
+                    b.Property<string>("ms_groupworkflowgroupworkflowcode")
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("ms_groupworkflowworkflowcode")
+                        .HasColumnType("character varying(100)");
+
                     b.HasKey("groupworkflowcode", "username")
                         .HasName("md_groupworkflow_PRIMARY");
+
+                    b.HasIndex("username");
+
+                    b.HasIndex("ms_groupworkflowworkflowcode", "ms_groupworkflowgroupworkflowcode");
 
                     b.ToTable("md_groupworkflow");
                 });
@@ -52,24 +62,24 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("rulecode");
 
-                    b.Property<int>("groupline")
-                        .HasColumnType("integer")
-                        .HasColumnName("groupline");
-
-                    b.Property<string>("paramcode")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("paramcode");
-
                     b.Property<int>("linenum")
                         .HasColumnType("integer")
                         .HasColumnName("linenum");
+
+                    b.Property<int>("groupline")
+                        .HasColumnType("integer")
+                        .HasColumnName("groupline");
 
                     b.Property<string>("linkexp")
                         .IsRequired()
                         .HasMaxLength(10)
                         .HasColumnType("character varying(10)")
                         .HasColumnName("linkexp");
+
+                    b.Property<string>("paramcode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("paramcode");
 
                     b.Property<string>("paramname")
                         .IsRequired()
@@ -89,6 +99,50 @@ namespace WORKFLOW.Migrations
                     b.ToTable("md_rule_exps");
                 });
 
+            modelBuilder.Entity("WORKFLOW.Model.db.md_rule_rslt", b =>
+                {
+                    b.Property<string>("workflowcode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("workflowcode");
+
+                    b.Property<string>("rulecode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("rulecode");
+
+                    b.Property<int>("linenum")
+                        .HasColumnType("integer")
+                        .HasColumnName("linenum");
+
+                    b.Property<int>("linegroup")
+                        .HasColumnType("integer")
+                        .HasColumnName("linegroup");
+
+                    b.Property<string>("groupworkflowcode")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("groupworkflowcode");
+
+                    b.Property<string>("actworkflow")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("actworkflow");
+
+                    b.Property<string>("descworkflow")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("descworkflow");
+
+                    b.HasKey("workflowcode", "rulecode", "linenum")
+                        .HasName("md_rule_rsl_PRIMARY");
+
+                    b.ToTable("md_rule_rslt");
+                });
+
             modelBuilder.Entity("WORKFLOW.Model.db.md_rule_var", b =>
                 {
                     b.Property<string>("workflowcode")
@@ -101,14 +155,14 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("rulecode");
 
+                    b.Property<int>("linenum")
+                        .HasColumnType("integer")
+                        .HasColumnName("linenum");
+
                     b.Property<string>("paramcode")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("paramcode");
-
-                    b.Property<int>("linenum")
-                        .HasColumnType("integer")
-                        .HasColumnName("linenum");
 
                     b.Property<string>("paramname")
                         .IsRequired()
@@ -160,14 +214,15 @@ namespace WORKFLOW.Migrations
 
             modelBuilder.Entity("WORKFLOW.Model.db.ms_groupworkflow", b =>
                 {
+                    b.Property<string>("workflowcode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("workflowcode");
+
                     b.Property<string>("groupworkflowcode")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("groupworkflowcode");
-
-                    b.Property<DateTime>("createdate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("createdate");
 
                     b.Property<string>("groupworkflowname")
                         .IsRequired()
@@ -179,11 +234,16 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("isactive");
 
+                    b.Property<DateTime>("createdate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("createdate");
+
                     b.Property<DateTime?>("updatedate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updatedate");
 
-                    b.HasKey("groupworkflowcode");
+                    b.HasKey("workflowcode", "groupworkflowcode")
+                        .HasName("ms_groupworkflow_PRIMARY");
 
                     b.ToTable("ms_groupworkflow");
                 });
@@ -200,18 +260,6 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("rulecode");
 
-                    b.Property<DateTime>("createdate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("createdate");
-
-                    b.Property<DateTime>("enddate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("enddate");
-
-                    b.Property<bool>("isactive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("isactive");
-
                     b.Property<string>("rulename")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -221,6 +269,18 @@ namespace WORKFLOW.Migrations
                     b.Property<DateTime>("startdate")
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("startdate");
+
+                    b.Property<DateTime>("enddate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("enddate");
+
+                    b.Property<bool>("isactive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isactive");
+
+                    b.Property<DateTime>("createdate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("createdate");
 
                     b.Property<DateTime?>("updatedate")
                         .HasColumnType("timestamp without time zone")
@@ -232,6 +292,42 @@ namespace WORKFLOW.Migrations
                     b.ToTable("ms_rule");
                 });
 
+            modelBuilder.Entity("WORKFLOW.Model.db.ms_user", b =>
+                {
+                    b.Property<string>("username")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("username");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("name");
+
+                    b.Property<string>("email")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("email");
+
+                    b.Property<bool>("isactive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isactive");
+
+                    b.Property<DateTime>("createdate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("createdate");
+
+                    b.Property<DateTime?>("updatedate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updatedate");
+
+                    b.HasKey("username");
+
+                    b.ToTable("ms_user");
+                });
+
             modelBuilder.Entity("WORKFLOW.Model.db.ms_workflow", b =>
                 {
                     b.Property<string>("workflowCode")
@@ -239,42 +335,113 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("workflowcode");
 
-                    b.Property<DateTime>("createdate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("createdate");
-
-                    b.Property<bool>("isactive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("isactive");
-
-                    b.Property<DateTime?>("updatedate")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("updatedate");
-
                     b.Property<string>("workflowname")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)")
                         .HasColumnName("workflowname");
 
+                    b.Property<bool>("isactive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("isactive");
+
+                    b.Property<DateTime>("createdate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("createdate");
+
+                    b.Property<DateTime?>("updatedate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("updatedate");
+
                     b.HasKey("workflowCode");
 
                     b.ToTable("ms_workflow");
                 });
 
+            modelBuilder.Entity("WORKFLOW.Model.db.tr_workflow", b =>
+                {
+                    b.Property<string>("documentnumber")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("documentnumber");
+
+                    b.Property<int>("linegroup")
+                        .HasColumnType("integer")
+                        .HasColumnName("linegroup");
+
+                    b.Property<string>("workflowcode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("workflowcode");
+
+                    b.Property<string>("rulecode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("rulecode");
+
+                    b.Property<string>("groupworkflowcode")
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("groupworkflowcode");
+
+                    b.Property<string>("actworkflow")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("actworkflow");
+
+                    b.Property<string>("descworkflow")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("descworkflow");
+
+                    b.Property<string>("closedby")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("closedby");
+
+                    b.Property<DateTime?>("closeddate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("closeddate");
+
+                    b.HasKey("documentnumber", "linegroup", "workflowcode", "rulecode", "groupworkflowcode")
+                        .HasName("tr_workflow_PRIMARY");
+
+                    b.HasIndex("workflowcode", "groupworkflowcode");
+
+                    b.ToTable("tr_workflow");
+                });
+
             modelBuilder.Entity("WORKFLOW.Model.db.md_groupworkflow", b =>
                 {
-                    b.HasOne("WORKFLOW.Model.db.ms_groupworkflow", null)
-                        .WithMany("md_groupworkflows")
-                        .HasForeignKey("groupworkflowcode")
+                    b.HasOne("WORKFLOW.Model.db.ms_user", "ms_users")
+                        .WithMany()
+                        .HasForeignKey("username")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("WORKFLOW.Model.db.ms_groupworkflow", null)
+                        .WithMany("md_groupworkflows")
+                        .HasForeignKey("ms_groupworkflowworkflowcode", "ms_groupworkflowgroupworkflowcode");
+
+                    b.Navigation("ms_users");
                 });
 
             modelBuilder.Entity("WORKFLOW.Model.db.md_rule_exp", b =>
                 {
                     b.HasOne("WORKFLOW.Model.db.ms_rule", null)
                         .WithMany("md_rule_exps")
+                        .HasForeignKey("workflowcode", "rulecode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WORKFLOW.Model.db.md_rule_rslt", b =>
+                {
+                    b.HasOne("WORKFLOW.Model.db.ms_rule", null)
+                        .WithMany("md_rule_rslts")
                         .HasForeignKey("workflowcode", "rulecode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -307,6 +474,17 @@ namespace WORKFLOW.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WORKFLOW.Model.db.tr_workflow", b =>
+                {
+                    b.HasOne("WORKFLOW.Model.db.ms_groupworkflow", "ms_groupworkflows")
+                        .WithMany()
+                        .HasForeignKey("workflowcode", "groupworkflowcode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ms_groupworkflows");
+                });
+
             modelBuilder.Entity("WORKFLOW.Model.db.ms_groupworkflow", b =>
                 {
                     b.Navigation("md_groupworkflows");
@@ -315,6 +493,8 @@ namespace WORKFLOW.Migrations
             modelBuilder.Entity("WORKFLOW.Model.db.ms_rule", b =>
                 {
                     b.Navigation("md_rule_exps");
+
+                    b.Navigation("md_rule_rslts");
 
                     b.Navigation("md_rule_vars");
                 });
