@@ -47,7 +47,7 @@ namespace WORKFLOW.Model.Context
 
             modelBuilder.Entity<md_rule_exp>(entity =>
             {
-                entity.HasKey(e => new { e.workflowcode, e.rulecode, e.groupline, e.paramcode })
+                entity.HasKey(e => new { e.workflowcode, e.rulecode, e.linenum, e.groupline, e.paramcode })
                     .HasName("md_rule_exp_PRIMARY");
             });
 

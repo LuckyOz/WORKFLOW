@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using WORKFLOW.Model.Context;
@@ -11,9 +12,10 @@ using WORKFLOW.Model.Context;
 namespace WORKFLOW.Migrations
 {
     [DbContext(typeof(WorkflowContext))]
-    partial class WorkflowContextModelSnapshot : ModelSnapshot
+    [Migration("20230412084715_update_key")]
+    partial class update_key
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

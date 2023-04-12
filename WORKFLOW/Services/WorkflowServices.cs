@@ -1,10 +1,13 @@
 ﻿
+using WORKFLOW.Model.Testing;
+
 namespace WORKFLOW.Services
 {
     public interface IWorkflowServices
     {
         Task<string[]> SetWorkFlow();
         Task<Response<List<RuleResultTree>>> FindWorkflow(DocumentRequestDto data);
+        Task<bool> insertDefault();
     }
 
     public class WorkflowServices : IWorkflowServices
@@ -164,6 +167,20 @@ namespace WORKFLOW.Services
             workflowRules = WorkflowList.ToArray();
 
             return workflowRules;
+        }
+
+        public async Task<bool> insertDefault()
+        {
+            bool result;
+            MyDb myDb = new MyDb();
+
+            try {
+                result = await _workflowDao.insertDefault(myDb.listmsworkflow, myDb.listmsgroupworkflow, myDb.listmsuser);
+            } catch {
+                result = false;
+            }
+
+            return result;
         }
     }
 }

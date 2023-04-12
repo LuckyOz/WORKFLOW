@@ -15,6 +15,7 @@ namespace WORKFLOW.Model.db
         [StringLength(100)]
         public string rulecode { get; set; } = string.Empty;
 
+        [Key]
         [Required]
         [Column("linenum")]
         public int linenum { get; set; }
