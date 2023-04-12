@@ -14,7 +14,7 @@ namespace WORKFLOW.Controllers
             _workflowServices = workflowServices;
         }
 
-        [HttpPost]
+        [HttpPost("getWorkflow")]
         public async Task<ActionResult<Response<List<RuleResultTree>>>> getWorkflow(DocumentRequestDto data)
         {
             Response<List<RuleResultTree>> response = new Response<List<RuleResultTree>>(); 
@@ -28,6 +28,16 @@ namespace WORKFLOW.Controllers
             }
 
             return Ok(response);
+        }
+
+        [HttpGet("insertDataDefault")]
+        public async Task<ActionResult<bool>> insertDataDefault()
+        {
+            try {
+                return await _workflowServices.insertDefault();
+            } catch {
+                return false;
+            }
         }
     }
 }
