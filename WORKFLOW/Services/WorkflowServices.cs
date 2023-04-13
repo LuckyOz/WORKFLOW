@@ -4,8 +4,8 @@ namespace WORKFLOW.Services
     public interface IWorkflowServices
     {
         Task<string[]> SetWorkFlow();
-        Task<Response<bool>> SetupWorkflow(DocumentRequestDto data);
-        Task<List<v_selectedworkflow>> getListViewSelectedWorkflow(string docnum);
+        Task<Response<bool>> SetupDocumentWorkflow(DocumentRequestDto data);
+        Task<Response<bool>> CloseWorkflow(CloseWorkflowDto data);
         Task<bool> insertDefault();
     }
 
@@ -18,31 +18,6 @@ namespace WORKFLOW.Services
         {
             _workflowDao = workflowDao;
             _workflowHelper = workflowHelper;
-        }
-
-        public async Task<Response<bool>> SetupWorkflow(DocumentRequestDto data)
-        {
-            Response<bool> response = new Response<bool>();
-
-            try {
-                var workflowResult = await _workflowHelper.GetWorkFlow(data.module, data);
-                var workflowResultSingle = workflowResult.Where(q => q.IsSuccess).FirstOrDefault();
-
-                if(workflowResultSingle != null) {
-                    var dataResultDetailString = JsonConvert.SerializeObject(workflowResultSingle?.ActionResult.Output);
-                    var dataResultDetail = JsonConvert.DeserializeObject<List<tr_workflow>>(dataResultDetailString);
-                    await _workflowDao.insertTransWorkflow(dataResultDetail!);
-                } else {
-                    response.Success = false;
-                    response.Message = "No Have Workflow for This Document !";
-                }
-
-            } catch (Exception ex) {
-                response.Success = false;
-                response.Message = ex.Message;
-            }
-
-            return response;
         }
 
         public async Task<string[]> SetWorkFlow()
@@ -179,6 +154,75 @@ namespace WORKFLOW.Services
             return workflowRules;
         }
 
+        public async Task<Response<bool>> SetupDocumentWorkflow(DocumentRequestDto data)
+        {
+            Response<bool> response = new Response<bool>();
+
+            try {
+                var cekDocumentWofklow = await _workflowDao.getListViewSelectedWorkflow(data.docNumber!);
+
+                if(cekDocumentWofklow.Count < 1) {
+                    var workflowResult = await _workflowHelper.GetWorkFlow(data.module, data);
+                    var workflowResultSingle = workflowResult.Where(q => q.IsSuccess).FirstOrDefault();
+
+                    if (workflowResultSingle != null) {
+                        var dataResultDetailString = JsonConvert.SerializeObject(workflowResultSingle?.ActionResult.Output);
+                        var dataResultDetail = JsonConvert.DeserializeObject<List<tr_workflow>>(dataResultDetailString);
+                        await _workflowDao.insertTransWorkflow(dataResultDetail!);
+                        response.Data = true;
+                    } else {
+                        response.Success = false;
+                        response.Message = "No Have Workflow for This Document !";
+                    }
+                } else {
+                    response.Success = false;
+                    response.Message = "Document Already have Workflow !";
+                }
+
+            } catch (Exception ex) {
+                response.Success = false;
+                response.Message = ex.Message;
+            }
+
+            return response;
+        }
+
+        public async Task<Response<bool>> CloseWorkflow(CloseWorkflowDto data)
+        {
+            Response<bool> response = new Response<bool>();
+
+            var DataWorkflow = await _workflowDao.getListViewSelectedWorkflow(data.documentNumber!);
+            
+            if (DataWorkflow.Count > 0) {
+
+                DataWorkflow = DataWorkflow.OrderBy(q => q.linegroup).Where(q => (q.closedby == "" || q.closedby is null) && q.closeddate is null).ToList();
+                var GetLineGroup = DataWorkflow?.FirstOrDefault()?.linegroup;
+                DataWorkflow = DataWorkflow?.Where(q => q.linegroup == GetLineGroup).ToList();
+                DataWorkflow = DataWorkflow?.Where(q => q.username!.Contains(data.userName!)).ToList();
+
+                if(DataWorkflow?.Count > 0) {
+                    var cekSubmitWorkflow = await _workflowDao.closeWorkflow(data.documentNumber!, GetLineGroup, data.userName!);
+
+                    if (cekSubmitWorkflow) {
+                        response.Data = true;
+                    } else {
+                        response.Success = false;
+                        response.Message = "Failed Submit Workflow !";
+                    }
+
+                } else {
+                    response.Success = false;
+                    response.Message = "User not Have Access to Approve or Review !";
+                }
+
+            } else {
+                response.Success = false;
+                response.Message = "No Have Document Workflow !";
+            }
+
+            return response;
+        }
+
         public async Task<bool> insertDefault()
         {
             bool result;
@@ -191,11 +235,6 @@ namespace WORKFLOW.Services
             }
 
             return result;
-        }
-
-        public async Task<List<v_selectedworkflow>> getListViewSelectedWorkflow(string docnum)
-        {
-            return await _workflowDao.getListViewSelectedWorkflow(docnum);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace WORKFLOW.Dao
         Task<List<ms_rule>> getListRuleByWorkflowCode(string workflowCode);
         Task<List<v_selectedworkflow>> getListViewSelectedWorkflow(string docnum);
         Task<ms_rule> getRuleByWorkflowCodeAndRulesCodeforCustomAction(string workflowCode, string rulesCode);
+        Task<bool> closeWorkflow(string documentnumber, int? linegroup, string username);
         Task<bool> insertTransWorkflow(List<tr_workflow> listDataTransWorkflow);
         Task<bool> insertDefault(List<ms_workflow> dataWorkflow, List<ms_groupworkflow> dataGroupWorkflow, List<ms_user> dataUserWorkflow);
     }
@@ -105,6 +106,31 @@ namespace WORKFLOW.Dao
         public async Task<List<v_selectedworkflow>> getListViewSelectedWorkflow(string docnum)
         {
             return await _workflowContext.v_selectedworkflows!.Where(q => q.documentnumber == docnum).ToListAsync();
+        }
+
+        public async Task<bool> closeWorkflow(string documentnumber, int? linegroup, string username)
+        {
+            try {
+                var dataDocumetnWorkflow = await _workflowContext!.tr_workflows!.Where(q => q.documentnumber == documentnumber && q.linegroup == linegroup).ToListAsync();
+
+                if(dataDocumetnWorkflow.Count > 0) {
+
+                    foreach(var loopDataWorkflow in dataDocumetnWorkflow) {
+                        loopDataWorkflow.closedby = username;
+                        loopDataWorkflow.closeddate = DateTime.UtcNow;
+                    }
+
+                    await _workflowContext.SaveChangesAsync();
+
+                } else {
+                    return false;
+                }
+
+            } catch {
+                return false;
+            }
+
+            return true;
         }
     }
 }

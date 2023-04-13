@@ -20,11 +20,26 @@ namespace WORKFLOW.Controllers
             Response<bool> response = new Response<bool>(); 
 
             try {
-                response = await _workflowServices.SetupWorkflow(data);
+                response = await _workflowServices.SetupDocumentWorkflow(data);
             } catch (Exception ex) {
                 response.Success = false;
                 response.Message = ex.Message;
                 return NotFound(response);
+            }
+
+            return Ok(response);
+        }
+
+        [HttpPost("closeworkflow")]
+        public async Task<ActionResult<Response<bool>>> closeworkflow(CloseWorkflowDto data)
+        {
+            Response<bool> response = new Response<bool>();
+
+            try {
+                response = await _workflowServices.CloseWorkflow(data);
+            } catch (Exception ex) {
+                response.Success = false;
+                response.Message = ex.Message;
             }
 
             return Ok(response);
@@ -40,11 +55,5 @@ namespace WORKFLOW.Controllers
             }
         }
 
-        [HttpGet("getviewselectedworkflow")]
-        public async Task<ActionResult<List<v_selectedworkflow>>> getviewselectedworkflow(string docnum)
-        {
-            var result = await _workflowServices.getListViewSelectedWorkflow(docnum);
-            return Ok(result);
-        }
     }
 }
