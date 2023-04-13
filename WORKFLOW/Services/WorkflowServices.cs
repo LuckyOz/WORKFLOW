@@ -169,6 +169,7 @@ namespace WORKFLOW.Services
                         var dataResultDetailString = JsonConvert.SerializeObject(workflowResultSingle?.ActionResult.Output);
                         var dataResultDetail = JsonConvert.DeserializeObject<List<tr_workflow>>(dataResultDetailString);
                         await _workflowDao.insertTransWorkflow(dataResultDetail!);
+                        await _workflowDao.closeSelfWorkflow(data.docNumber, data.creator);
                         response.Data = true;
                     } else {
                         response.Success = false;
@@ -191,11 +192,9 @@ namespace WORKFLOW.Services
         {
             Response<bool> response = new Response<bool>();
 
-            var DataWorkflow = await _workflowDao.getListViewSelectedWorkflow(data.documentNumber!);
+            var DataWorkflow = await _workflowDao.getViewSelectedWorkflowNext(data.documentNumber!);
             
             if (DataWorkflow.Count > 0) {
-
-                DataWorkflow = DataWorkflow.OrderBy(q => q.linegroup).Where(q => (q.closedby == "" || q.closedby is null) && q.closeddate is null).ToList();
                 var GetLineGroup = DataWorkflow?.FirstOrDefault()?.linegroup;
                 DataWorkflow = DataWorkflow?.Where(q => q.linegroup == GetLineGroup).ToList();
                 DataWorkflow = DataWorkflow?.Where(q => q.username!.Contains(data.userName!)).ToList();
@@ -204,17 +203,22 @@ namespace WORKFLOW.Services
                     var cekSubmitWorkflow = await _workflowDao.closeWorkflow(data.documentNumber!, GetLineGroup, data.userName!);
 
                     if (cekSubmitWorkflow) {
+
+                        var cekDataFinish = await _workflowDao.getViewSelectedWorkflowNext(data.documentNumber!);
+
+                        if(cekDataFinish?.FirstOrDefault()?.rulecode == "FINISH") {
+                            await _workflowDao.closeFinishWorkflow(data.documentNumber!, data.userName!);
+                        }
+
                         response.Data = true;
                     } else {
                         response.Success = false;
                         response.Message = "Failed Submit Workflow !";
                     }
-
                 } else {
                     response.Success = false;
                     response.Message = "User not Have Access to Approve or Review !";
                 }
-
             } else {
                 response.Success = false;
                 response.Message = "No Have Document Workflow !";
