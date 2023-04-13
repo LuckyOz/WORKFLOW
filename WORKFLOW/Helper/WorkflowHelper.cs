@@ -13,16 +13,14 @@ namespace WORKFLOW.Helper
 
         public bool RefreshWorkFlow(string[] workflowRules)
         {
-            //var reSettings = new ReSettings
-            //{
-            //    CustomActions = new Dictionary<string, Func<ActionBase>>{
-            //                              {"ResultPromo", () => new ResultPromoHelper()}
-            //                          }
-            //};
+            var reSettings = new ReSettings
+            {
+                CustomActions = new Dictionary<string, Func<ActionBase>>{
+                                          {"ResultPromo", () => new ResultPromoHelper()}
+                                      }
+            };
 
-            //_rulesEngine = new RulesEngine.RulesEngine(workflowRules, reSettings);
-
-            _rulesEngine = new RulesEngine.RulesEngine(workflowRules);
+            _rulesEngine = new RulesEngine.RulesEngine(workflowRules, reSettings);
 
             return true;
         }

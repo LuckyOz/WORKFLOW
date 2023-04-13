@@ -1,12 +1,11 @@
 ﻿
-using WORKFLOW.Model.Testing;
-
 namespace WORKFLOW.Services
 {
     public interface IWorkflowServices
     {
         Task<string[]> SetWorkFlow();
-        Task<Response<List<RuleResultTree>>> FindWorkflow(DocumentRequestDto data);
+        Task<Response<bool>> SetupWorkflow(DocumentRequestDto data);
+        Task<List<v_selectedworkflow>> getListViewSelectedWorkflow(string docnum);
         Task<bool> insertDefault();
     }
 
@@ -21,14 +20,25 @@ namespace WORKFLOW.Services
             _workflowHelper = workflowHelper;
         }
 
-        public async Task<Response<List<RuleResultTree>>> FindWorkflow(DocumentRequestDto data)
+        public async Task<Response<bool>> SetupWorkflow(DocumentRequestDto data)
         {
-            Response<List<RuleResultTree>> response = new Response<List<RuleResultTree>>();
+            Response<bool> response = new Response<bool>();
 
             try {
-                response.Data = await _workflowHelper.GetWorkFlow(data.module, data);
+                var workflowResult = await _workflowHelper.GetWorkFlow(data.module, data);
+                var workflowResultSingle = workflowResult.Where(q => q.IsSuccess).FirstOrDefault();
+
+                if(workflowResultSingle != null) {
+                    var dataResultDetailString = JsonConvert.SerializeObject(workflowResultSingle?.ActionResult.Output);
+                    var dataResultDetail = JsonConvert.DeserializeObject<List<tr_workflow>>(dataResultDetailString);
+                    await _workflowDao.insertTransWorkflow(dataResultDetail!);
+                } else {
+                    response.Success = false;
+                    response.Message = "No Have Workflow for This Document !";
+                }
+
             } catch (Exception ex) {
-                response.Success = false;   
+                response.Success = false;
                 response.Message = ex.Message;
             }
 
@@ -122,30 +132,30 @@ namespace WORKFLOW.Services
                                 }
                             }
 
-                            ////get data result 
-                            //ms_rule getDataResult = await _workflowDao
-                            //                                .getRuleByWorkflowCodeAndRulesCodeforCustomAction(
-                            //                                                    workflowHeader.workflowCode, loopRules.rulecode);
+                            //get data result 
+                            ms_rule getDataResult = await _workflowDao
+                                                            .getRuleByWorkflowCodeAndRulesCodeforCustomAction(
+                                                                                workflowHeader.workflowCode, loopRules.rulecode);
 
-                            //context addContext = new context()
-                            //{
-                            //    data = getDataResult
-                            //};
+                            context addContext = new context()
+                            {
+                                data = getDataResult
+                            };
 
-                            //onsuccess addOnsuccess = new onsuccess()
-                            //{
-                            //    Name = "ResultPromo",
-                            //    Context = addContext
-                            //};
+                            onsuccess addOnsuccess = new onsuccess()
+                            {
+                                Name = "ResultPromo",
+                                Context = addContext
+                            };
 
-                            //action addAction = new action()
-                            //{
-                            //    OnSuccess = addOnsuccess
-                            //};
+                            action addAction = new action()
+                            {
+                                OnSuccess = addOnsuccess
+                            };
 
                             rules rules = new rules()
                             {
-                                //Actions = addAction,
+                                Actions = addAction,
                                 RuleName = loopRules.rulecode,
                                 SuccessEvent = "#",
                                 LocalParams = listLocalParams,
@@ -181,6 +191,11 @@ namespace WORKFLOW.Services
             }
 
             return result;
+        }
+
+        public async Task<List<v_selectedworkflow>> getListViewSelectedWorkflow(string docnum)
+        {
+            return await _workflowDao.getListViewSelectedWorkflow(docnum);
         }
     }
 }

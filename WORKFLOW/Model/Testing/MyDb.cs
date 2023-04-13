@@ -126,7 +126,6 @@
         {
             new ms_groupworkflow()
             {
-                workflowcode = "PR",
                 groupworkflowcode = "PR_Review_IT",
                 groupworkflowname = "PR Review IT",
                 isactive = true,
@@ -147,7 +146,6 @@
             },
             new ms_groupworkflow()
             {
-                workflowcode = "PR",
                 groupworkflowcode = "PR_App_IT",
                 groupworkflowname = "PR Approval IT",
                 isactive = true,
@@ -168,7 +166,6 @@
             },
             new ms_groupworkflow()
             {
-                workflowcode = "PR",
                 groupworkflowcode = "PR_Review_FIN",
                 groupworkflowname = "PR Review FIN",
                 isactive = true,
@@ -189,7 +186,6 @@
             },
             new ms_groupworkflow()
             {
-                workflowcode = "PR",
                 groupworkflowcode = "PR_App_FIN",
                 groupworkflowname = "PR Approval FIN",
                 isactive = true,

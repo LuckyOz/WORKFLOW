@@ -5,7 +5,9 @@ namespace WORKFLOW.Dao
     {
         Task<List<ms_workflow>> getListWorkflow();
         Task<List<ms_rule>> getListRuleByWorkflowCode(string workflowCode);
+        Task<List<v_selectedworkflow>> getListViewSelectedWorkflow(string docnum);
         Task<ms_rule> getRuleByWorkflowCodeAndRulesCodeforCustomAction(string workflowCode, string rulesCode);
+        Task<bool> insertTransWorkflow(List<tr_workflow> listDataTransWorkflow);
         Task<bool> insertDefault(List<ms_workflow> dataWorkflow, List<ms_groupworkflow> dataGroupWorkflow, List<ms_user> dataUserWorkflow);
     }
 
@@ -46,27 +48,30 @@ namespace WORKFLOW.Dao
             return dataRule!;
         }
 
+        public async Task<bool> insertTransWorkflow(List<tr_workflow> listDataTransWorkflow)
+        {
+            _workflowContext.tr_workflows?.AddRange(listDataTransWorkflow);
+            await _workflowContext.SaveChangesAsync();
+
+            return true;
+        }
+
         public async Task<bool> insertDefault(List<ms_workflow> listDataWorkflow, List<ms_groupworkflow> listDataGroupWorkflow, List<ms_user> listDataUserWorkflow)
         {
-            try {
-                List<string> listWFTesting = new List<string>() {
-                    new string("PR")
-                };
+            string messageError;
 
+            try {
                 var listMsWorkflowDelete = await _workflowContext.ms_workflows!.AsNoTracking()
-                    .Where(q => listWFTesting.Contains(q.workflowCode))
                     .Include(q => q.md_workflows)
                     .ToListAsync();
 
                 var listMsRuleDelete = await _workflowContext.ms_rules!.AsNoTracking()
-                    .Where(q => listWFTesting.Contains(q.workflowcode))
                     .Include(q => q.md_rule_vars)
                     .Include(q => q.md_rule_exps)
                     .Include(q => q.md_rule_rslts)
                     .ToListAsync();
 
                 var listMsGroupWorkflow = await _workflowContext.ms_groupworkflows!.AsNoTracking()
-                    .Where(q => listWFTesting.Contains(q.workflowcode))
                     .Include(q => q.md_groupworkflows)
                     .ToListAsync();
 
@@ -79,7 +84,9 @@ namespace WORKFLOW.Dao
                 _workflowContext.ms_users!.RemoveRange(listMsuser);
 
                 await _workflowContext.SaveChangesAsync();
-            } catch (Exception ex) { }
+            } catch (Exception ex) {
+                messageError = ex.Message;
+            }
 
             try {
                 await _workflowContext.ms_workflows!.AddRangeAsync(listDataWorkflow);
@@ -88,10 +95,16 @@ namespace WORKFLOW.Dao
 
                 await _workflowContext.SaveChangesAsync();
             } catch (Exception ex) {
+                messageError = ex.Message;
                 return false;
             }
 
             return true;
+        }
+
+        public async Task<List<v_selectedworkflow>> getListViewSelectedWorkflow(string docnum)
+        {
+            return await _workflowContext.v_selectedworkflows!.Where(q => q.documentnumber == docnum).ToListAsync();
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
+﻿
+using Microsoft.AspNetCore.Mvc;
 
 namespace WORKFLOW.Controllers
 {
@@ -15,12 +15,12 @@ namespace WORKFLOW.Controllers
         }
 
         [HttpPost("getWorkflow")]
-        public async Task<ActionResult<Response<List<RuleResultTree>>>> getWorkflow(DocumentRequestDto data)
+        public async Task<ActionResult<Response<bool>>> getWorkflow(DocumentRequestDto data)
         {
-            Response<List<RuleResultTree>> response = new Response<List<RuleResultTree>>(); 
+            Response<bool> response = new Response<bool>(); 
 
             try {
-                response = await _workflowServices.FindWorkflow(data);
+                response = await _workflowServices.SetupWorkflow(data);
             } catch (Exception ex) {
                 response.Success = false;
                 response.Message = ex.Message;
@@ -38,6 +38,13 @@ namespace WORKFLOW.Controllers
             } catch {
                 return false;
             }
+        }
+
+        [HttpGet("getviewselectedworkflow")]
+        public async Task<ActionResult<List<v_selectedworkflow>>> getviewselectedworkflow(string docnum)
+        {
+            var result = await _workflowServices.getListViewSelectedWorkflow(docnum);
+            return Ok(result);
         }
     }
 }

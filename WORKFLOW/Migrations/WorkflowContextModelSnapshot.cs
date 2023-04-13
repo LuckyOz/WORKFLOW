@@ -34,18 +34,8 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("username");
 
-                    b.Property<string>("ms_groupworkflowgroupworkflowcode")
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("ms_groupworkflowworkflowcode")
-                        .HasColumnType("character varying(100)");
-
                     b.HasKey("groupworkflowcode", "username")
                         .HasName("md_groupworkflow_PRIMARY");
-
-                    b.HasIndex("username");
-
-                    b.HasIndex("ms_groupworkflowworkflowcode", "ms_groupworkflowgroupworkflowcode");
 
                     b.ToTable("md_groupworkflow");
                 });
@@ -214,11 +204,6 @@ namespace WORKFLOW.Migrations
 
             modelBuilder.Entity("WORKFLOW.Model.db.ms_groupworkflow", b =>
                 {
-                    b.Property<string>("workflowcode")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("workflowcode");
-
                     b.Property<string>("groupworkflowcode")
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
@@ -242,8 +227,7 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("timestamp without time zone")
                         .HasColumnName("updatedate");
 
-                    b.HasKey("workflowcode", "groupworkflowcode")
-                        .HasName("ms_groupworkflow_PRIMARY");
+                    b.HasKey("groupworkflowcode");
 
                     b.ToTable("ms_groupworkflow");
                 });
@@ -409,24 +393,16 @@ namespace WORKFLOW.Migrations
                     b.HasKey("documentnumber", "linegroup", "workflowcode", "rulecode", "groupworkflowcode")
                         .HasName("tr_workflow_PRIMARY");
 
-                    b.HasIndex("workflowcode", "groupworkflowcode");
-
                     b.ToTable("tr_workflow");
                 });
 
             modelBuilder.Entity("WORKFLOW.Model.db.md_groupworkflow", b =>
                 {
-                    b.HasOne("WORKFLOW.Model.db.ms_user", "ms_users")
-                        .WithMany()
-                        .HasForeignKey("username")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WORKFLOW.Model.db.ms_groupworkflow", null)
                         .WithMany("md_groupworkflows")
-                        .HasForeignKey("ms_groupworkflowworkflowcode", "ms_groupworkflowgroupworkflowcode");
-
-                    b.Navigation("ms_users");
+                        .HasForeignKey("groupworkflowcode")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("WORKFLOW.Model.db.md_rule_exp", b =>
@@ -472,17 +448,6 @@ namespace WORKFLOW.Migrations
                         .HasForeignKey("workflowcode")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("WORKFLOW.Model.db.tr_workflow", b =>
-                {
-                    b.HasOne("WORKFLOW.Model.db.ms_groupworkflow", "ms_groupworkflows")
-                        .WithMany()
-                        .HasForeignKey("workflowcode", "groupworkflowcode")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ms_groupworkflows");
                 });
 
             modelBuilder.Entity("WORKFLOW.Model.db.ms_groupworkflow", b =>

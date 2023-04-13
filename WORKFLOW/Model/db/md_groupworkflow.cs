@@ -9,12 +9,10 @@
         [StringLength(100)]
         public string groupworkflowcode { get; set; } = string.Empty;
 
-        [ForeignKey("ms_user")]
+        [Key]
         [Required]
         [Column("username")]
         [StringLength(100)]
         public string username { get; set; } = string.Empty;
-
-        public ms_user? ms_users { get; set; }
     }
 }

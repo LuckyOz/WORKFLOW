@@ -18,9 +18,12 @@ namespace WORKFLOW.Model.Context
         public DbSet<md_groupworkflow>? md_groupworkflows { get; set; }
         public DbSet<ms_user>? ms_users { get; set; }
         public DbSet<tr_workflow>? tr_workflows { get; set; }
+        public DbSet<v_selectedworkflow>? v_selectedworkflows { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<v_selectedworkflow>().ToView("v_selectedworkflow").HasKey("documentnumber", "linegroup", "workflowcode", "rulecode", "groupworkflowcode", "username");
+
             modelBuilder.Entity<md_groupworkflow>(entity =>
             {
                 entity.HasKey(e => new { e.groupworkflowcode, e.username })
@@ -55,12 +58,6 @@ namespace WORKFLOW.Model.Context
             {
                 entity.HasKey(e => new { e.workflowcode, e.rulecode, e.linenum })
                     .HasName("md_rule_rsl_PRIMARY");
-            });
-
-            modelBuilder.Entity<ms_groupworkflow>(entity =>
-            {
-                entity.HasKey(e => new { e.workflowcode, e.groupworkflowcode })
-                    .HasName("ms_groupworkflow_PRIMARY");
             });
 
             modelBuilder.Entity<tr_workflow>(entity =>

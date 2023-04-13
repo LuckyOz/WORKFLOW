@@ -26,7 +26,7 @@
         [StringLength(100)]
         public string rulecode { get; set; } = string.Empty;
 
-        [ForeignKey("ms_groupworkflow")]
+        [Key]
         [Required]
         [Column("groupworkflowcode")]
         [StringLength(100)]
@@ -47,7 +47,5 @@
 
         [Column("closeddate")]
         public System.Nullable<DateTime> closeddate { get; set; }
-
-        public ms_groupworkflow? ms_groupworkflows { get; set; }
     }
 }
