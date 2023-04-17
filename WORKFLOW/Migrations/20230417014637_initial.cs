@@ -67,7 +67,9 @@ namespace WORKFLOW.Migrations
                     actworkflow = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     descworkflow = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
                     closedby = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    closeddate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
+                    closeddate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true),
+                    rejectedby = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    rejecteddate = table.Column<DateTime>(type: "timestamp without time zone", nullable: true)
                 },
                 constraints: table =>
                 {

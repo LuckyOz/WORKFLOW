@@ -31,7 +31,7 @@ namespace WORKFLOW.Controllers
         }
 
         [HttpPost("closeworkflow")]
-        public async Task<ActionResult<Response<bool>>> closeworkflow(CloseWorkflowDto data)
+        public async Task<ActionResult<Response<bool>>> closeworkflow(CloseWorkflowRequestDto data)
         {
             Response<bool> response = new Response<bool>();
 

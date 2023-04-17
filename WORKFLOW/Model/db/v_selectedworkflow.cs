@@ -13,5 +13,7 @@
         public string? username { get; set; }
         public string? closedby { get; set; }
         public System.Nullable<DateTime> closeddate { get; set; }
+        public string? rejectedby { get; set; }
+        public System.Nullable<DateTime> rejecteddate { get; set; }
     }
 }

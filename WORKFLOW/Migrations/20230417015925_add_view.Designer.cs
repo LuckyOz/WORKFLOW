@@ -12,8 +12,8 @@ using WORKFLOW.Model.Context;
 namespace WORKFLOW.Migrations
 {
     [DbContext(typeof(WorkflowContext))]
-    [Migration("20230413040805_initial")]
-    partial class initial
+    [Migration("20230417015925_add_view")]
+    partial class add_view
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -392,10 +392,60 @@ namespace WORKFLOW.Migrations
                         .HasColumnType("character varying(200)")
                         .HasColumnName("descworkflow");
 
+                    b.Property<string>("rejectedby")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("rejectedby");
+
+                    b.Property<DateTime?>("rejecteddate")
+                        .HasColumnType("timestamp without time zone")
+                        .HasColumnName("rejecteddate");
+
                     b.HasKey("documentnumber", "linegroup", "workflowcode", "rulecode", "groupworkflowcode")
                         .HasName("tr_workflow_PRIMARY");
 
                     b.ToTable("tr_workflow");
+                });
+
+            modelBuilder.Entity("WORKFLOW.Model.db.v_selectedworkflow", b =>
+                {
+                    b.Property<string>("documentnumber")
+                        .HasColumnType("text");
+
+                    b.Property<int>("linegroup")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("workflowcode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("rulecode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("groupworkflowcode")
+                        .HasColumnType("text");
+
+                    b.Property<string>("username")
+                        .HasColumnType("text");
+
+                    b.Property<string>("actworkflow")
+                        .HasColumnType("text");
+
+                    b.Property<string>("closedby")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("closeddate")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("descworkflow")
+                        .HasColumnType("text");
+
+                    b.Property<string>("groupworkflowname")
+                        .HasColumnType("text");
+
+                    b.HasKey("documentnumber", "linegroup", "workflowcode", "rulecode", "groupworkflowcode", "username");
+
+                    b.ToView("v_selectedworkflow");
                 });
 
             modelBuilder.Entity("WORKFLOW.Model.db.md_groupworkflow", b =>

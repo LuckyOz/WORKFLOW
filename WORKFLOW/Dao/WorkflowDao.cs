@@ -192,7 +192,7 @@ namespace WORKFLOW.Dao
 
         public async Task<List<v_selectedworkflow>> getViewSelectedWorkflowNext(string docnum)
         {
-            var DataWorkflow = await  _workflowContext!.v_selectedworkflows!
+            var DataWorkflow = await _workflowContext!.v_selectedworkflows!
                                         .OrderBy(q => q.linegroup)
                                         .Where(q => q.documentnumber == docnum && (q.closedby == "" || q.closedby == null) && q.closeddate == null)
                                         .ToListAsync();

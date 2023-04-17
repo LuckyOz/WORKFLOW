@@ -5,7 +5,7 @@ namespace WORKFLOW.Services
     {
         Task<string[]> SetWorkFlow();
         Task<Response<bool>> SetupDocumentWorkflow(DocumentRequestDto data);
-        Task<Response<bool>> CloseWorkflow(CloseWorkflowDto data);
+        Task<Response<bool>> CloseWorkflow(CloseWorkflowRequestDto data);
         Task<bool> insertDefault();
     }
 
@@ -188,7 +188,7 @@ namespace WORKFLOW.Services
             return response;
         }
 
-        public async Task<Response<bool>> CloseWorkflow(CloseWorkflowDto data)
+        public async Task<Response<bool>> CloseWorkflow(CloseWorkflowRequestDto data)
         {
             Response<bool> response = new Response<bool>();
 

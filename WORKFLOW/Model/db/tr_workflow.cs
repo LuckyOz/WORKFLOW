@@ -47,5 +47,12 @@
 
         [Column("closeddate")]
         public System.Nullable<DateTime> closeddate { get; set; }
+
+        [Column("rejectedby")]
+        [StringLength(100)]
+        public string rejectedby { get; set; } = string.Empty;
+
+        [Column("rejecteddate")]
+        public System.Nullable<DateTime> rejecteddate { get; set; }
     }
 }
